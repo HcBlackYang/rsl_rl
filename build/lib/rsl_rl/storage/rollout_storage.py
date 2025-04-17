@@ -147,12 +147,6 @@ class RolloutStorage:
     def mini_batch_generator(self, num_mini_batches, num_epochs=8):
         batch_size = self.num_envs * self.num_transitions_per_env
         mini_batch_size = batch_size // num_mini_batches
-        
-        print(f"🌍 num_envs = {self.num_envs}")
-        print(f"🔁 num_transitions_per_env = {self.num_transitions_per_env}")
-        print(f"📦 batch_size = {batch_size}")
-        print(f"🔹 mini_batch_size = {mini_batch_size} (num_mini_batches = {num_mini_batches})")
-
         indices = torch.randperm(num_mini_batches*mini_batch_size, requires_grad=False, device=self.device)
 
         observations = self.observations.flatten(0, 1)

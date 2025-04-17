@@ -182,11 +182,6 @@ class PPO:
         num_updates = self.num_learning_epochs * self.num_mini_batches
         mean_value_loss /= num_updates
         mean_surrogate_loss /= num_updates
-
-        print("✅ obs_batch.shape:", obs_batch.shape)
-        print("✅ masks_batch.shape:", masks_batch.shape)
-
-
         self.storage.clear()
 
         return mean_value_loss, mean_surrogate_loss
