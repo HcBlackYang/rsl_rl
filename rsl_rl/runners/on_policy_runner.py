@@ -541,6 +541,69 @@ class OnPolicyRunner:
 
         _, _ = self.env.reset()
 
+# class OnPolicyRunner:
+#     def __init__(self,
+#                  env: VecEnv,
+#                  train_cfg,
+#                  log_dir=None,
+#                  device='cpu'):
+
+#         self.cfg=train_cfg["runner"]
+#         self.alg_cfg = train_cfg["algorithm"]
+#         self.policy_cfg = train_cfg["policy"]
+#         self.device = device
+#         self.env = env
+#         if self.env.num_privileged_obs is not None:
+#             num_critic_obs = self.env.num_privileged_obs
+#         else:
+#             num_critic_obs = self.env.num_obs
+
+#         actor_critic_class = eval(self.cfg["policy_class_name"]) # Should be ActorCriticRecurrent
+
+#         # Prepare kwargs from policy_cfg
+#         policy_kwargs = self.policy_cfg.copy() # Create a copy
+#         # Remove num_envs if it accidentally exists in policy_cfg from previous runs/saves
+#         policy_kwargs.pop('num_envs', None)
+
+#         # --- FIX: Pass num_envs as a positional argument ---
+#         actor_critic: ActorCriticRecurrent = actor_critic_class(
+#                                                         self.env.num_obs,          # Positional arg 1
+#                                                         num_critic_obs,         # Positional arg 2
+#                                                         self.env.num_actions,      # Positional arg 3
+#                                                         self.env.num_envs,         # Positional arg 4 (The new one)
+#                                                         **policy_kwargs).to(self.device) # Keyword args last
+#         # ----------------------------------------------------
+
+#         alg_class = eval(self.cfg["algorithm_class_name"]) # PPO
+#         self.alg: PPO = alg_class(actor_critic, device=device, **self.alg_cfg)
+#         self.num_steps_per_env = self.cfg["num_steps_per_env"]
+#         self.save_interval = self.cfg["save_interval"]
+
+#         # init storage and model
+#         self.alg.init_storage(self.env.num_envs, self.num_steps_per_env, [self.env.num_obs], [self.env.num_privileged_obs], [self.env.num_actions])
+
+#         # Log, stats, etc.
+#         self.log_dir = log_dir
+#         self.writer = None
+#         self.tot_timesteps = 0
+#         self.tot_time = 0
+#         self.current_learning_iteration = 0
+#         self.global_step = 0
+
+#         self.mean_reward = 0.0
+#         self.mean_episode_length = 0.0
+#         self.success_rate = 0.0
+#         self.current_statistics = {
+#             'mean_reward': 0.0,
+#             'mean_episode_length': 0.0,
+#             'success_rate': 0.0,
+#             'Loss/value_function': 0.0,
+#             'Loss/surrogate': 0.0,
+#         }
+#         self.finished_episodes_info_list = []
+
+#         _, _ = self.env.reset()
+
     def learn(self, num_learning_iterations, init_at_random_ep_len=False):
         # initialize writer
         if self.log_dir is not None and self.writer is None:
